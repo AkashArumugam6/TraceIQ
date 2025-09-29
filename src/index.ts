@@ -63,19 +63,7 @@ async function startServer() {
     console.log(`🔌 WebSocket server ready at ws://localhost:${PORT}/graphql`);
   });
 
-  // Simulate anomaly detection every 10 seconds
-  setInterval(() => {
-    const newAnomaly: Anomaly = {
-      id: Date.now().toString(),
-      ip: `192.168.1.${Math.floor(Math.random() * 255)}`,
-      severity: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)]!,
-      reason: `Simulated anomaly detected at ${new Date().toISOString()}`,
-      timestamp: new Date().toISOString()
-    };
-
-    console.log(`🔍 New anomaly detected: ${JSON.stringify(newAnomaly, null, 2)}`);
-    pubsub.publish('ANOMALY_DETECTED', { anomalyDetected: newAnomaly });
-  }, 10000);
+  console.log('📊 Anomaly detection is now database-driven via log ingestion');
 }
 
 startServer().catch((error) => {

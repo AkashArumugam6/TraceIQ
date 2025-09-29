@@ -1,46 +1,76 @@
 import { PubSub } from 'graphql-subscriptions';
-import { Anomaly, LogIngestResponse } from '../types/index.js';
+import { LogIngestResponse } from '../types/index.js';
+import { prisma } from '../lib/prisma.js';
 
 // Create a PubSub instance for subscriptions
 export const pubsub = new PubSub();
 
-// Hardcoded anomalies data
-const anomalies: Anomaly[] = [
-  {
-    id: '1',
-    ip: '192.168.1.100',
-    severity: 'HIGH',
-    reason: 'Multiple failed login attempts',
-    timestamp: new Date().toISOString()
-  },
-  {
-    id: '2',
-    ip: '10.0.0.50',
-    severity: 'MEDIUM',
-    reason: 'Unusual data transfer pattern',
-    timestamp: new Date(Date.now() - 300000).toISOString() // 5 minutes ago
-  },
-  {
-    id: '3',
-    ip: '172.16.0.25',
-    severity: 'LOW',
-    reason: 'Suspicious user agent string',
-    timestamp: new Date(Date.now() - 600000).toISOString() // 10 minutes ago
-  }
-];
-
 export const resolvers = {
   Query: {
-    anomalies: () => anomalies
+    anomalies: async () => {
+      const anomalies = await prisma.anomaly.findMany({
+        orderBy: { timestamp: 'desc' }
+      });
+      
+      return anomalies.map(anomaly => ({
+        id: anomaly.id.toString(),
+        ip: anomaly.ip,
+        severity: anomaly.severity,
+        reason: anomaly.reason,
+        timestamp: anomaly.timestamp.toISOString()
+      }));
+    }
   },
 
   Mutation: {
-    ingestLog: (_: any, { source, event, ip, user }: { source: string; event: string; ip: string; user: string }): LogIngestResponse => {
-      console.log(`[LOG INGEST] Source: ${source}, Event: ${event}, IP: ${ip}, User: ${user}`);
-      return {
-        success: true,
-        message: 'Log received'
-      };
+    ingestLog: async (_: any, { source, event, ip, user }: { source: string; event: string; ip: string; user: string }): Promise<LogIngestResponse> => {
+      try {
+        // Save log entry to database
+        await prisma.logEntry.create({
+          data: {
+            source,
+            event,
+            ip,
+            user,
+            timestamp: new Date()
+          }
+        });
+
+        // Create a dummy anomaly
+        const anomaly = await prisma.anomaly.create({
+          data: {
+            ip,
+            severity: 'low',
+            reason: 'dummy anomaly',
+            timestamp: new Date()
+          }
+        });
+
+        // Publish the new anomaly to subscribers
+        const anomalyForSubscription = {
+          id: anomaly.id.toString(),
+          ip: anomaly.ip,
+          severity: anomaly.severity,
+          reason: anomaly.reason,
+          timestamp: anomaly.timestamp.toISOString()
+        };
+
+        pubsub.publish('ANOMALY_DETECTED', { anomalyDetected: anomalyForSubscription });
+
+        console.log(`[LOG INGEST] Source: ${source}, Event: ${event}, IP: ${ip}, User: ${user}`);
+        console.log(`[ANOMALY CREATED] ID: ${anomaly.id}, IP: ${anomaly.ip}`);
+
+        return {
+          success: true,
+          message: 'Log received'
+        };
+      } catch (error) {
+        console.error('Error ingesting log:', error);
+        return {
+          success: false,
+          message: 'Failed to process log'
+        };
+      }
     }
   },
 

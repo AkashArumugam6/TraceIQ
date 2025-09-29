@@ -47,7 +47,25 @@ npm install
 - **REST health check** endpoint
 - **TypeScript** with ES modules
 - **WebSocket support** for subscriptions
-- **Simulated anomaly detection** (generates dummy anomalies every 10 seconds)
+- **SQLite database** with Prisma ORM
+- **Persistent data storage** for logs and anomalies
+
+## Database Setup
+
+1. Generate Prisma client:
+```bash
+npm run prisma:generate
+```
+
+2. Run database migrations:
+```bash
+npm run prisma:migrate
+```
+
+3. (Optional) Open Prisma Studio to view data:
+```bash
+npm run prisma:studio
+```
 
 ## Development
 
@@ -134,6 +152,11 @@ src/
     └── index.ts          # TypeScript type definitions
 ```
 
-## Simulated Anomaly Detection
+## Database-Driven Anomaly Detection
 
-The server automatically generates dummy anomalies every 10 seconds to demonstrate the subscription functionality.
+Anomalies are now created automatically when logs are ingested via the `ingestLog` mutation. Each log ingestion creates a corresponding anomaly entry in the database and publishes it to subscribers.
+
+## Database Schema
+
+- **LogEntry**: Stores ingested logs with source, event, IP, user, and timestamp
+- **Anomaly**: Stores detected anomalies with IP, severity, reason, and timestamp
