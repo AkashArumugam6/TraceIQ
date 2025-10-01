@@ -158,5 +158,68 @@ Anomalies are now created automatically when logs are ingested via the `ingestLo
 
 ## Database Schema
 
-- **LogEntry**: Stores ingested logs with source, event, IP, user, and timestamp
-- **Anomaly**: Stores detected anomalies with IP, severity, reason, and timestamp
+- **LogEntry**: Stores ingested logs with source, event, eventType, IP, user, and timestamp
+- **Anomaly**: Stores detected anomalies with IP, severity, reason, timestamp, and reference to LogEntry
+
+## Rule-based Detection
+
+TraceIQ includes a modular rule-based anomaly detection system that analyzes incoming logs in real-time:
+
+### Current Detection Rules
+
+1. **Brute Force Detection**
+   - **Trigger**: `eventType = "FAILED_LOGIN"`
+   - **Logic**: Count failed login attempts from the same IP in the last 10 minutes
+   - **Threshold**: > 5 failed attempts
+   - **Severity**: HIGH
+   - **Reason**: "Brute force attempt detected"
+
+2. **Privilege Escalation Detection**
+   - **Trigger**: `eventType` contains "sudo" or "root"
+   - **Logic**: Pattern matching on event type
+   - **Severity**: MEDIUM
+   - **Reason**: "Privilege escalation detected"
+
+3. **Geo Anomaly Detection** (Placeholder)
+   - **Trigger**: Unusual geographic location
+   - **Status**: Ready for implementation
+   - **Future**: Integration with geolocation services
+
+### Detection Architecture
+
+- **Modular Design**: Rules are defined in `src/detection/rules.ts`
+- **Error Handling**: Detection failures don't crash the ingestion process
+- **Real-time**: Anomalies are published immediately via GraphQL subscriptions
+- **Extensible**: Easy to add new rules or integrate AI-based detection
+
+### Testing Detection Rules
+
+```graphql
+# Test brute force detection (run this 6 times quickly)
+mutation {
+  ingestLog(
+    source: "auth-server"
+    event: "login_failed"
+    eventType: "FAILED_LOGIN"
+    ip: "192.168.1.100"
+    user: "attacker"
+  ) {
+    success
+    message
+  }
+}
+
+# Test privilege escalation detection
+mutation {
+  ingestLog(
+    source: "system"
+    event: "user_command"
+    eventType: "sudo_command"
+    ip: "10.0.0.50"
+    user: "suspicious_user"
+  ) {
+    success
+    message
+  }
+}
+```

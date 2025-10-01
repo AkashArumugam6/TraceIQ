@@ -14,9 +14,13 @@ model LogEntry {
   id        Int      @id @default(autoincrement())
   source    String
   event     String
+  eventType String?  // Add eventType field for rule-based detection
   ip        String
   user      String
   timestamp DateTime @default(now())
+  
+  // Reference to related anomalies
+  anomalies Anomaly[]
 
   @@map("log_entries")
 }
@@ -27,6 +31,10 @@ model Anomaly {
   severity  String
   reason    String
   timestamp DateTime @default(now())
+  
+  // Reference to the log entry that triggered this anomaly
+  logEntryId Int?
+  logEntry   LogEntry? @relation(fields: [logEntryId], references: [id])
 
   @@map("anomalies")
 }

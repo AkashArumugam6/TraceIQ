@@ -19,7 +19,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    ingestLog(source: String!, event: String!, ip: String!, user: String!): LogIngestResponse!
+    ingestLog(source: String!, event: String!, eventType: String, ip: String!, user: String!): LogIngestResponse!
   }
 
   type Subscription {
