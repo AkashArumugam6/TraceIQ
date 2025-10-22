@@ -26,11 +26,15 @@ model LogEntry {
 }
 
 model Anomaly {
-  id        Int      @id @default(autoincrement())
-  ip        String
-  severity  String
-  reason    String
-  timestamp DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  ip               String
+  severity         String
+  reason           String
+  timestamp        DateTime @default(now())
+  aiExplanation    String?
+  recommendedAction String?
+  detectionSource  String?
+  confidenceScore  Float?
   
   // Reference to the log entry that triggered this anomaly
   logEntryId Int?

@@ -67,6 +67,81 @@ npm run prisma:migrate
 npm run prisma:studio
 ```
 
+## 🤖 AI-Powered Analysis
+
+TraceIQ now includes Google Gemini AI integration for intelligent threat detection and analysis.
+
+### Getting Started with AI Analysis
+
+1. **Get a Gemini API Key**:
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a new API key
+   - Copy the key for configuration
+
+2. **Configure Environment Variables**:
+   Create a `.env` file in the project root:
+   ```env
+   GEMINI_API_KEY=your_actual_api_key_here
+   AI_ANALYSIS_ENABLED=true
+   AI_ANALYSIS_INTERVAL_MINUTES=5
+   AI_BATCH_SIZE=50
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+4. **Run Database Migration** (for AI fields):
+   ```bash
+   npm run prisma:migrate
+   ```
+
+### How AI Analysis Works
+
+- **Scheduled Analysis**: AI runs every 5 minutes (configurable) to analyze recent logs
+- **Batch Processing**: Analyzes up to 50 recent logs per cycle (configurable)
+- **Intelligent Detection**: Identifies patterns missed by rule-based detection
+- **Real-time Updates**: AI-detected anomalies are published via GraphQL subscriptions
+- **Hybrid Detection**: Can enhance existing rule-based anomalies with AI insights
+
+### Detection Sources
+
+- **RULE**: Traditional rule-based detection (brute force, privilege escalation)
+- **AI**: Pure AI-detected anomalies using Gemini analysis
+- **HYBRID**: Rule-based anomalies enhanced with AI explanations and recommendations
+
+### AI Analysis Features
+
+- **Threat Pattern Recognition**: Identifies complex attack patterns across multiple logs
+- **Contextual Analysis**: Considers timing, frequency, and relationships between events
+- **Severity Assessment**: AI rates threats as CRITICAL, HIGH, MEDIUM, or LOW
+- **Actionable Recommendations**: Provides specific remediation steps
+- **Confidence Scoring**: AI confidence level (0-100) for each detection
+- **Risk Assessment**: Overall system risk score based on recent activity
+
+### Cost Considerations
+
+- **Gemini Flash Free Tier**: 15 requests per minute
+- **Batch Processing**: Reduces API calls by analyzing multiple logs together
+- **Configurable Intervals**: Adjust analysis frequency based on your needs
+- **Graceful Degradation**: System continues working if AI is unavailable
+
+### Example AI-Generated Anomalies
+
+```json
+{
+  "id": "123",
+  "ip": "192.168.1.100",
+  "severity": "HIGH",
+  "reason": "Suspicious data exfiltration pattern",
+  "aiExplanation": "Detected unusual data transfer patterns with large file sizes during off-hours, combined with multiple failed authentication attempts suggesting potential data breach attempt.",
+  "recommendedAction": "Immediately block this IP, audit data access logs, and check for any unauthorized data transfers.",
+  "detectionSource": "AI",
+  "confidenceScore": 87
+}
+```
+
 ## Development
 
 ```bash
@@ -135,6 +210,40 @@ subscription {
     severity
     reason
     timestamp
+    aiExplanation
+    recommendedAction
+    detectionSource
+    confidenceScore
+  }
+}
+```
+
+### Query Logs by IP
+
+```graphql
+query {
+  logsByIp(ip: "192.168.1.100") {
+    id
+    source
+    event
+    eventType
+    ip
+    user
+    timestamp
+  }
+}
+```
+
+### Get AI Analysis Summary
+
+```graphql
+query {
+  aiAnalysisSummary {
+    lastAnalysisTime
+    overallRiskScore
+    topThreats
+    attackPatternsDetected
+    totalAiAnomalies
   }
 }
 ```
