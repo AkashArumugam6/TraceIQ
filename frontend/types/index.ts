@@ -18,6 +18,10 @@ export interface Anomaly {
   recommendedAction?: string
   detectionSource: 'RULE' | 'AI' | 'HYBRID'
   confidenceScore?: number
+  status: 'OPEN' | 'INVESTIGATING' | 'FALSE_POSITIVE' | 'RESOLVED'
+  resolutionNotes?: string
+  resolvedAt?: string
+  resolvedBy?: string
   logEntry?: LogEntry
 }
 

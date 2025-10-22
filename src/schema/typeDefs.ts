@@ -11,6 +11,10 @@ export const typeDefs = gql`
     recommendedAction: String
     detectionSource: String
     confidenceScore: Float
+    status: String!
+    resolutionNotes: String
+    resolvedAt: String
+    resolvedBy: String
     logEntry: LogEntry
   }
 
@@ -53,6 +57,7 @@ export const typeDefs = gql`
   type Mutation {
     ingestLog(source: String!, event: String!, eventType: String, ip: String!, user: String!): LogIngestResponse!
     triggerAiAnalysis: LogIngestResponse!
+    updateAnomalyStatus(id: ID!, status: String!, resolutionNotes: String, resolvedBy: String): LogIngestResponse!
   }
 
   type Subscription {

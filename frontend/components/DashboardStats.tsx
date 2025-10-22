@@ -36,7 +36,7 @@ export function DashboardStats() {
     )
   }
 
-  const anomalies = anomaliesData?.anomalies || []
+  const anomalies = anomaliesData?.anomalies?.anomalies || []
   const aiSummary = aiData?.aiAnalysisSummary
 
   const criticalAnomalies = anomalies.filter(a => a.severity.toUpperCase() === 'CRITICAL').length

@@ -11,6 +11,7 @@ import { TableSkeleton } from './ui/LoadingSkeleton'
 import { AnomalyDetailsModal } from './AnomalyDetailsModal'
 import { formatTimestamp } from '@/lib/utils/format'
 import { getSeverityColor } from '@/lib/utils/severity'
+import { IPAddress } from './IPAddress'
 import { 
   ShieldCheckIcon, 
   SparklesIcon, 
@@ -190,9 +191,7 @@ export function AnomaliesTable() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white font-mono bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded">
-                          {anomaly.ip}
-                        </div>
+                        <IPAddress ip={anomaly.ip} />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">

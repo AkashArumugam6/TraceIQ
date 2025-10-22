@@ -47,7 +47,7 @@ export function ThreatTimeline() {
     )
   }
 
-  const anomalies: Anomaly[] = data?.anomalies || []
+  const anomalies: Anomaly[] = data?.anomalies?.anomalies || []
 
   // Process data for the last 7 days
   const last7Days = Array.from({ length: 7 }, (_, i) => {

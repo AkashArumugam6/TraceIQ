@@ -21,3 +21,31 @@ export const INGEST_LOG = gql`
   }
 `
 
+export const UPDATE_ANOMALY_STATUS = gql`
+  mutation UpdateAnomalyStatus(
+    $id: ID!
+    $status: String!
+    $resolutionNotes: String
+    $resolvedBy: String
+  ) {
+    updateAnomalyStatus(
+      id: $id
+      status: $status
+      resolutionNotes: $resolutionNotes
+      resolvedBy: $resolvedBy
+    ) {
+      success
+      message
+    }
+  }
+`
+
+export const TRIGGER_AI_ANALYSIS = gql`
+  mutation TriggerAiAnalysis {
+    triggerAiAnalysis {
+      success
+      message
+    }
+  }
+`
+

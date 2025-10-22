@@ -12,6 +12,10 @@ export const ANOMALY_DETECTED = gql`
       recommendedAction
       detectionSource
       confidenceScore
+      status
+      resolutionNotes
+      resolvedAt
+      resolvedBy
       logEntry {
         id
         source
@@ -24,4 +28,6 @@ export const ANOMALY_DETECTED = gql`
     }
   }
 `
+
+export const ANOMALY_DETECTED_SUBSCRIPTION = ANOMALY_DETECTED
 

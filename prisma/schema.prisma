@@ -35,6 +35,10 @@ model Anomaly {
   recommendedAction String?
   detectionSource  String?
   confidenceScore  Float?
+  status           String   @default("OPEN") // OPEN, INVESTIGATING, FALSE_POSITIVE, RESOLVED
+  resolutionNotes  String?
+  resolvedAt       DateTime?
+  resolvedBy       String?
   
   // Reference to the log entry that triggered this anomaly
   logEntryId Int?

@@ -13,6 +13,10 @@ export const GET_ANOMALIES = gql`
         recommendedAction
         detectionSource
         confidenceScore
+        status
+        resolutionNotes
+        resolvedAt
+        resolvedBy
         logEntry {
           id
           source

@@ -1,211 +1,314 @@
-# TraceIQ Frontend
+# TraceIQ Frontend - Enhanced Security Dashboard
 
-A modern Next.js frontend for the TraceIQ anomaly detection system, built with Next.js 14, TypeScript, Tailwind CSS, and Apollo Client.
+A comprehensive Next.js frontend for TraceIQ, featuring advanced visualizations, real-time monitoring, and AI-powered security insights.
 
-## Features
+## 🚀 Features
 
-- **Real-time Monitoring**: Live anomaly detection with WebSocket subscriptions
-- **AI-Powered Insights**: Google Gemini AI integration for intelligent threat analysis
-- **Interactive Dashboard**: Comprehensive security overview with charts and metrics
-- **Dark Mode**: Toggle between light and dark themes
-- **Responsive Design**: Mobile-first design that works on all devices
-- **Modern UI**: Clean, professional interface with smooth animations
+### Advanced Dashboard Visualizations
+- **Anomaly Heatmap**: Calendar heatmap showing anomaly density over the last 30 days
+- **Severity Distribution**: Interactive donut chart with percentage breakdown by severity
+- **Detection Source Comparison**: Bar chart comparing RULE vs AI vs HYBRID detections
+- **Top Threatened IPs**: List of top 10 IPs with most anomalies, clickable for detailed analysis
+- **Live Activity Feed**: Real-time scrollable feed of the last 20 log entries
 
-## Tech Stack
+### Enhanced Filtering & Search
+- **Global Search**: Search across IPs, users, and keywords with debounced input
+- **Advanced Filters**: Multi-select filters for severity, detection source, and status
+- **Date Range Picker**: Last 24h, 7d, 30d, or custom date ranges
+- **URL Persistence**: All filter states persist in URL parameters
+- **Export Functionality**: Export filtered results to CSV/JSON
 
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **GraphQL**: Apollo Client with WebSocket support
-- **Charts**: Recharts for data visualization
-- **Icons**: Heroicons
+### IP Intelligence Panel
+- **Comprehensive IP Analysis**: Detailed view when clicking any IP address
+- **Activity Timeline**: Mini chart showing IP activity over time
+- **Log History**: Paginated table of all logs from the IP
+- **Anomaly History**: All anomalies associated with the IP
+- **External Integrations**: Placeholder buttons for WHOIS lookup and threat intelligence
+
+### Anomaly Workflow Management
+- **Status Management**: OPEN, INVESTIGATING, FALSE_POSITIVE, RESOLVED
+- **Action Buttons**: Quick status updates with resolution notes
+- **Status History**: Track who resolved what and when
+- **Status Filtering**: Filter anomalies by their current status
+- **Colored Status Badges**: Visual indicators for easy status identification
+
+### AI Analysis Enhancements
+- **Manual Analysis Trigger**: On-demand AI analysis with loading states
+- **Analysis History**: Track past analysis runs with risk score trends
+- **High Confidence Filter**: Show only AI detections with >70% confidence
+- **Real-time Updates**: Live updates when new AI analysis completes
+
+### Performance & UX Improvements
+- **Skeleton Loaders**: Beautiful loading states for all data-fetching components
+- **Optimistic UI**: Immediate feedback for user actions
+- **Debounced Search**: 300ms delay to prevent excessive API calls
+- **Keyboard Shortcuts**: 
+  - `/` for search
+  - `Cmd+K` / `Ctrl+K` for command palette
+  - `Esc` to close modals
+
+### Notifications & Alerts
+- **Notification Center**: Dropdown with last 20 anomalies grouped by severity
+- **Unread Count Badge**: Visual indicator of new notifications
+- **Browser Notifications**: Permission request for CRITICAL anomalies
+- **Toast Notifications**: In-app notifications for user actions
+
+### Settings & Configuration
+- **AI Analysis Settings**: Configurable intervals and batch sizes
+- **Notification Preferences**: Choose which severities trigger notifications
+- **Theme Management**: Light, dark, or system theme preference
+- **Detection Rules**: Enable/disable specific detection rules
+- **Settings Export**: Download all settings as JSON
+
+### Mobile Optimizations
+- **Responsive Design**: Fully responsive across all screen sizes
+- **Mobile Bottom Navigation**: Fixed bottom nav for easy mobile navigation
+- **Touch-Friendly**: Optimized touch targets and gestures
+- **Mobile Modals**: Full-screen modals on mobile devices
+
+### Accessibility & Polish
+- **ARIA Labels**: Proper accessibility labels throughout
+- **Keyboard Navigation**: Full keyboard support for all interactive elements
+- **Focus Management**: Visible focus states and logical tab order
+- **Screen Reader Support**: Proper semantic HTML and ARIA live regions
+- **Color Contrast**: WCAG AA compliant color schemes
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS with custom design system
+- **State Management**: Apollo Client with GraphQL
+- **Charts**: Recharts for data visualizations
+- **Icons**: Heroicons for consistent iconography
 - **Notifications**: React Hot Toast
-- **UI Components**: Headless UI
+- **TypeScript**: Full type safety throughout
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ 
-- TraceIQ backend running on `http://localhost:4000`
-
-### Installation
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Create environment file:
-```bash
-echo "NEXT_PUBLIC_GRAPHQL_HTTP=http://localhost:4000/graphql
-NEXT_PUBLIC_GRAPHQL_WS=ws://localhost:4000/graphql" > .env.local
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 frontend/
 ├── app/                    # Next.js App Router pages
-│   ├── layout.tsx         # Root layout with providers
-│   ├── page.tsx           # Dashboard page
-│   ├── anomalies/         # Anomalies page
+│   ├── anomalies/         # Anomalies page with advanced filtering
+│   ├── insights/          # AI insights with manual analysis
 │   ├── logs/              # Logs page
-│   ├── insights/          # AI insights page
-│   ├── error.tsx          # Error boundary
-│   └── loading.tsx        # Loading component
-├── components/            # React components
+│   ├── settings/          # Comprehensive settings page
+│   └── page.tsx           # Enhanced dashboard
+├── components/            # Reusable UI components
 │   ├── ui/               # Base UI components
-│   ├── Navbar.tsx        # Navigation bar
-│   ├── DashboardStats.tsx # Dashboard statistics
-│   ├── AnomaliesTable.tsx # Anomalies table
-│   ├── AiInsightCard.tsx  # AI insights card
-│   └── ...               # Other feature components
-├── lib/                  # Utility libraries
-│   ├── apollo-client.ts  # Apollo Client configuration
-│   ├── graphql/          # GraphQL operations
+│   ├── AnomalyHeatmap.tsx
+│   ├── SeverityDistribution.tsx
+│   ├── DetectionSourceComparison.tsx
+│   ├── TopThreatenedIPs.tsx
+│   ├── LiveActivityFeed.tsx
+│   ├── IPDetailsPanel.tsx
+│   ├── IPAddress.tsx
+│   ├── GlobalSearch.tsx
+│   ├── NotificationCenter.tsx
+│   ├── CommandPalette.tsx
+│   ├── ErrorBoundary.tsx
+│   ├── EmptyState.tsx
+│   └── MobileBottomNav.tsx
+├── lib/                  # Utilities and configurations
+│   ├── apollo-client.ts
+│   ├── apollo-wrapper.tsx
+│   ├── graphql/          # GraphQL queries, mutations, subscriptions
 │   └── utils/            # Utility functions
-├── types/                # TypeScript type definitions
-└── ...                   # Configuration files
+└── types/                # TypeScript type definitions
 ```
 
-## Pages
+## 🚀 Getting Started
 
-### Dashboard (`/`)
-- Overview of all security metrics
-- Recent anomalies table
-- AI insights and risk assessment
-- Log ingestion form for testing
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Backend server running on port 4000
 
-### Anomalies (`/anomalies`)
-- Complete list of all detected anomalies
-- Filtering by severity and detection source
-- Detailed anomaly information modals
-- Real-time updates via subscriptions
+### Installation
 
-### Logs (`/logs`)
-- System logs and log entries
-- Filter by IP address
-- Search functionality
-- Log entry details
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### Insights (`/insights`)
-- AI-powered security analysis
-- Risk assessment with visual gauge
-- Threat timeline charts
-- Attack pattern detection
-- AI-detected anomalies list
+2. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-## Components
-
-### Core Components
-- **Navbar**: Navigation with theme toggle and live status
-- **DashboardStats**: Key metrics and statistics cards
-- **AnomaliesTable**: Interactive anomalies table with filtering
-- **AiInsightCard**: AI analysis and risk assessment
-- **RiskGauge**: Circular risk level indicator
-- **ThreatTimeline**: Area chart showing threats over time
-- **RealtimeMonitor**: WebSocket subscription handler
-- **LogIngestForm**: Form for ingesting test logs
-
-### UI Components
-- **Badge**: Severity and status indicators
-- **Card**: Content containers with headers
-- **Button**: Interactive buttons with variants
-- **Modal**: Anomaly details modal
-- **LoadingSkeleton**: Loading state indicators
-
-## Features
-
-### Real-time Updates
-- WebSocket connection to backend
-- Live anomaly notifications
-- Toast notifications for new threats
-- Automatic UI updates
-
-### AI Integration
-- Google Gemini AI analysis
-- Intelligent threat detection
-- Confidence scoring
-- Actionable recommendations
-- Attack pattern recognition
-
-### Dark Mode
-- System preference detection
-- Manual toggle
-- Persistent theme selection
-- Smooth transitions
-
-### Responsive Design
-- Mobile-first approach
-- Adaptive layouts
-- Touch-friendly interactions
-- Optimized for all screen sizes
-
-## Configuration
+3. **Open in browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ### Environment Variables
-- `NEXT_PUBLIC_GRAPHQL_HTTP`: GraphQL HTTP endpoint
-- `NEXT_PUBLIC_GRAPHQL_WS`: GraphQL WebSocket endpoint
 
-### Tailwind Configuration
-- Custom severity colors (critical, high, medium, low)
-- Dark mode support
-- Custom animations
-- Responsive breakpoints
-
-## Development
-
-### Available Scripts
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm run start`: Start production server
-- `npm run lint`: Run ESLint
-
-### Code Style
-- TypeScript strict mode
-- ESLint configuration
-- Prettier formatting
-- Component-based architecture
-
-## Deployment
-
-The frontend can be deployed to any platform that supports Next.js:
-
-- **Vercel** (recommended)
-- **Netlify**
-- **AWS Amplify**
-- **Docker** container
-
-### Build for Production
-```bash
-npm run build
-npm start
+Create a `.env.local` file:
+```env
+NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:4000/graphql
+NEXT_PUBLIC_WS_ENDPOINT=ws://localhost:4000/graphql
 ```
 
-## Browser Support
+## 🎨 Design System
 
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+### Color Palette
+- **Primary**: Blue (#3b82f6)
+- **Success**: Green (#10b981)
+- **Warning**: Yellow (#f59e0b)
+- **Error**: Red (#ef4444)
+- **Info**: Blue (#06b6d4)
 
-## Contributing
+### Severity Colors
+- **Critical**: Red (#dc2626)
+- **High**: Orange (#ea580c)
+- **Medium**: Yellow (#d97706)
+- **Low**: Green (#16a34a)
 
-1. Follow the existing code style
-2. Use TypeScript for all new code
-3. Add proper error handling
-4. Include loading states
-5. Test on multiple devices
-6. Update documentation
+### Status Colors
+- **Open**: Red
+- **Investigating**: Yellow
+- **False Positive**: Gray
+- **Resolved**: Green
 
-## License
+## 📱 Mobile Features
 
-MIT License - see LICENSE file for details.
+### Bottom Navigation
+- Dashboard, Anomalies, Logs, Insights, Settings
+- Active state indicators
+- Touch-optimized sizing
+
+### Responsive Tables
+- Horizontal scroll on mobile
+- Stacked layouts for complex data
+- Touch-friendly action buttons
+
+### Mobile Modals
+- Full-screen on mobile devices
+- Swipe-to-close gestures
+- Optimized content layout
+
+## 🔧 Configuration
+
+### AI Analysis Settings
+- **Interval**: 2, 5, 10, 30, or 60 minutes
+- **Batch Size**: 50, 100, 200, or 500 logs
+- **Detection Methods**: AI, Hybrid, or both
+
+### Notification Settings
+- **Severity Levels**: Choose which levels trigger notifications
+- **Notification Types**: Browser notifications, toast notifications
+- **Real-time Updates**: Live anomaly detection alerts
+
+### Detection Rules
+- **Rule-based Detection**: Enable/disable traditional rules
+- **Specific Rules**: Failed login, suspicious activity, unusual traffic, data exfiltration
+- **AI Integration**: Configure AI analysis parameters
+
+## 🎯 Key Components
+
+### AnomalyHeatmap
+```tsx
+<AnomalyHeatmap />
+```
+Calendar heatmap showing anomaly density over time with color-coded intensity levels.
+
+### SeverityDistribution
+```tsx
+<SeverityDistribution />
+```
+Interactive donut chart with tooltips and legend showing severity breakdown.
+
+### IPDetailsPanel
+```tsx
+<IPDetailsPanel 
+  ip="192.168.1.1" 
+  isOpen={true} 
+  onClose={() => setOpen(false)} 
+/>
+```
+Comprehensive IP analysis with tabs for overview, logs, anomalies, and timeline.
+
+### GlobalSearch
+```tsx
+<GlobalSearch onClose={() => setSearchOpen(false)} />
+```
+Full-text search across all data with keyboard shortcuts and result highlighting.
+
+## 🚀 Performance Optimizations
+
+### Data Fetching
+- **Apollo Client Caching**: Intelligent caching with cache policies
+- **Pagination**: Efficient data loading with cursor-based pagination
+- **Debounced Search**: Prevents excessive API calls during typing
+
+### UI Performance
+- **Skeleton Loaders**: Immediate feedback during data loading
+- **Optimistic Updates**: Instant UI updates for better perceived performance
+- **Lazy Loading**: Components loaded only when needed
+
+### Bundle Optimization
+- **Code Splitting**: Automatic route-based code splitting
+- **Tree Shaking**: Unused code elimination
+- **Image Optimization**: Next.js automatic image optimization
+
+## 🧪 Testing
+
+### Component Testing
+```bash
+npm run test
+```
+
+### E2E Testing
+```bash
+npm run test:e2e
+```
+
+### Accessibility Testing
+```bash
+npm run test:a11y
+```
+
+## 📦 Deployment
+
+### Vercel (Recommended)
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
+### Docker
+```bash
+docker build -t traceiq-frontend .
+docker run -p 3000:3000 traceiq-frontend
+```
+
+### Static Export
+```bash
+npm run build
+npm run export
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+### Code Style
+- Use TypeScript for all new code
+- Follow the existing component structure
+- Use Tailwind CSS for styling
+- Write meaningful commit messages
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Join our Discord community
+
+---
+
+**TraceIQ Frontend** - Advanced security monitoring made simple and beautiful.

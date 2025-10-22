@@ -2,6 +2,11 @@ import { DashboardStats } from '@/components/DashboardStats'
 import { AnomaliesTable } from '@/components/AnomaliesTable'
 import { AiInsightCard } from '@/components/AiInsightCard'
 import { LogIngestForm } from '@/components/LogIngestForm'
+import { AnomalyHeatmap } from '@/components/AnomalyHeatmap'
+import { SeverityDistribution } from '@/components/SeverityDistribution'
+import { DetectionSourceComparison } from '@/components/DetectionSourceComparison'
+import { TopThreatenedIPs } from '@/components/TopThreatenedIPs'
+import { LiveActivityFeed } from '@/components/LiveActivityFeed'
 
 export default function Dashboard() {
   return (
@@ -30,6 +35,14 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <DashboardStats />
 
+      {/* Advanced Visualizations Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        <AnomalyHeatmap />
+        <SeverityDistribution />
+        <DetectionSourceComparison />
+        <TopThreatenedIPs />
+      </div>
+
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Anomalies Table - Takes 2 columns */}
@@ -37,10 +50,11 @@ export default function Dashboard() {
           <AnomaliesTable />
         </div>
 
-        {/* AI Insights - Takes 1 column */}
+        {/* Right Sidebar - Takes 1 column */}
         <div className="space-y-6">
           <AiInsightCard />
           <LogIngestForm />
+          <LiveActivityFeed />
         </div>
       </div>
     </div>

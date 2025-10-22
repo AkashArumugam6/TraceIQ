@@ -27,27 +27,31 @@ export const resolvers = {
       const hasNextPage = offset + limit < totalCount;
       const hasPreviousPage = offset > 0;
       
-      return {
-        anomalies: anomalies.map(anomaly => ({
-          id: anomaly.id.toString(),
-          ip: anomaly.ip,
-          severity: anomaly.severity,
-          reason: anomaly.reason,
-          timestamp: anomaly.timestamp.toISOString(),
-          aiExplanation: anomaly.aiExplanation,
-          recommendedAction: anomaly.recommendedAction,
-          detectionSource: anomaly.detectionSource || 'RULE',
-          confidenceScore: anomaly.confidenceScore,
-          logEntry: anomaly.logEntry ? {
-            id: anomaly.logEntry.id.toString(),
-            source: anomaly.logEntry.source,
-            event: anomaly.logEntry.event,
-            eventType: anomaly.logEntry.eventType,
-            ip: anomaly.logEntry.ip,
-            user: anomaly.logEntry.user,
-            timestamp: anomaly.logEntry.timestamp.toISOString()
-          } : null
-        })),
+        return {
+          anomalies: anomalies.map(anomaly => ({
+            id: anomaly.id.toString(),
+            ip: anomaly.ip,
+            severity: anomaly.severity,
+            reason: anomaly.reason,
+            timestamp: anomaly.timestamp.toISOString(),
+            aiExplanation: anomaly.aiExplanation,
+            recommendedAction: anomaly.recommendedAction,
+            detectionSource: anomaly.detectionSource || 'RULE',
+            confidenceScore: anomaly.confidenceScore,
+            status: anomaly.status || 'OPEN',
+            resolutionNotes: anomaly.resolutionNotes,
+            resolvedAt: anomaly.resolvedAt?.toISOString(),
+            resolvedBy: anomaly.resolvedBy,
+            logEntry: anomaly.logEntry ? {
+              id: anomaly.logEntry.id.toString(),
+              source: anomaly.logEntry.source,
+              event: anomaly.logEntry.event,
+              eventType: anomaly.logEntry.eventType,
+              ip: anomaly.logEntry.ip,
+              user: anomaly.logEntry.user,
+              timestamp: anomaly.logEntry.timestamp.toISOString()
+            } : null
+          })),
         totalCount,
         hasNextPage,
         hasPreviousPage
@@ -240,6 +244,36 @@ export const resolvers = {
         return {
           success: false,
           message: 'Failed to trigger AI analysis'
+        };
+      }
+    },
+
+    updateAnomalyStatus: async (_: any, { id, status, resolutionNotes, resolvedBy }: { id: string; status: string; resolutionNotes?: string; resolvedBy?: string }): Promise<LogIngestResponse> => {
+      try {
+        const updateData: any = {
+          status,
+          ...(resolutionNotes && { resolutionNotes }),
+          ...(resolvedBy && { resolvedBy })
+        };
+
+        if (status === 'RESOLVED') {
+          updateData.resolvedAt = new Date();
+        }
+
+        await prisma.anomaly.update({
+          where: { id: parseInt(id) },
+          data: updateData
+        });
+
+        return {
+          success: true,
+          message: 'Anomaly status updated successfully'
+        };
+      } catch (error) {
+        console.error('Error updating anomaly status:', error);
+        return {
+          success: false,
+          message: 'Failed to update anomaly status'
         };
       }
     }
